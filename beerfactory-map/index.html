@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Three.js - Three.js</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <!--Three js-->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/build/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!--Canvas-->
+    <div id="canvas-container"></div>
+    <!--Script-->
+    <script>
+        const backgroundColor = 0x000000;
+
+        var renderCalls = [];
+
+        function render() {
+            requestAnimationFrame(render);
+            renderCalls.forEach((callback) => {
+                callback();
+            });
+        }
+        render();
+
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1200);
+        camera.position.set(-50, 50, 50);
+
+        var renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(backgroundColor);
+        renderer.physicallyCorrectLights = true;
+
+        renderer.toneMapping = THREE.LinearToneMapping;
+        renderer.toneMappingExposure = Math.pow(0.94, 5.0);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+
+        window.addEventListener('resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, false);
+
+        document.body.appendChild(renderer.domElement);
+
+        function renderScene() {
+            renderer.render(scene, camera);
+        }
+        renderCalls.push(renderScene);
+
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        controls.rotateSpeed = 0.5;
+        controls.zoomSpeed = 0.9;
+
+        controls.minDistance = 75;
+        controls.maxDistance = 85;
+
+        controls.minPolarAngle = Math.PI/6; // radians
+        controls.maxPolarAngle = Math.PI/3; // radians
+
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        renderCalls.push(function() {
+            controls.update()
+        });
+
+        var loader1 = new THREE.GLTFLoader();
+        loader1.crossOrigin = true;
+        loader1.load('mapBase.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 0, 0);
+            scene.add(object);
+        });
+
+        var loader2 = new THREE.GLTFLoader();
+        loader2.crossOrigin = true;
+        loader2.load('maze.glb', function(data) {
+            var object = data.scene;
+            object.position.set(22, 9, 10);
+            scene.add(object);
+        });
+
+        var loader3 = new THREE.GLTFLoader();
+        loader3.crossOrigin = true;
+        loader3.load('bank.glb', function(data) {
+            var object = data.scene;
+            object.position.set(6, 10, -11);
+            scene.add(object);
+        });
+
+        var loader4 = new THREE.GLTFLoader();
+        loader4.crossOrigin = true;
+        loader4.load('commonRetailers.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 0, 0);
+            scene.add(object);
+        });
+
+        var loader5 = new THREE.GLTFLoader();
+        loader5.crossOrigin = true;
+        loader5.load('ladyLiberty.glb', function(data) {
+            var object = data.scene;
+            object.position.set(21, 11, -18);
+            scene.add(object);
+        });
+
+        var loader6 = new THREE.GLTFLoader();
+        loader6.crossOrigin = true;
+        loader6.load('advertisement.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-26, 10, -26);
+            scene.add(object);
+        });
+
+        var loader7 = new THREE.GLTFLoader();
+        loader7.crossOrigin = true;
+        loader7.load('cafe.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, -8);
+            scene.add(object);
+        });
+
+        var loader8 = new THREE.GLTFLoader();
+        loader8.crossOrigin = true;
+        loader8.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, -20);
+            scene.add(object);
+        });
+
+        var loader9 = new THREE.GLTFLoader();
+        loader9.crossOrigin = true;
+        loader9.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, -8);
+            scene.add(object);
+        });
+
+        var loader10 = new THREE.GLTFLoader();
+        loader10.crossOrigin = true;
+        loader10.load('gasBunk.glb', function(data) {
+            var object = data.scene;
+            object.position.set(7, 9, 22);
+            scene.add(object);
+        });
+
+        var loader11 = new THREE.GLTFLoader();
+        loader11.crossOrigin = true;
+        loader11.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, 16);
+            scene.add(object);
+        });
+
+        var loader12 = new THREE.GLTFLoader();
+        loader12.crossOrigin = true;
+        loader12.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, 16);
+            scene.add(object);
+        });
+
+        var loader13 = new THREE.GLTFLoader();
+        loader13.crossOrigin = true;
+        loader13.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(8, 9, 8);
+            scene.add(object);
+        });
+
+        var loader13 = new THREE.GLTFLoader();
+        loader13.crossOrigin = true;
+        loader13.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(20, 9, -4);
+            scene.add(object);
+        });
+
+        var loader14 = new THREE.GLTFLoader();
+        loader14.crossOrigin = true;
+        loader14.load('fortDelta.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, 9, 20);
+            scene.add(object);
+        });
+
+        var loader15 = new THREE.GLTFLoader();
+        loader15.crossOrigin = true;
+        loader15.load('towerOfBrandy.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-22, 9, 7);
+            scene.add(object);
+        });
+
+    </script>
+</body>
+
+</html>
