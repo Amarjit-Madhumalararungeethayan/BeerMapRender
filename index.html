@@ -215,6 +215,22 @@
             scene.add(object);
         });
 
+        var loader16 = new THREE.GLTFLoader();
+        loader16.crossOrigin = true;
+        loader16.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(14, 9.3, 22);
+            scene.add(object);
+        });
+
+        var loader17 = new THREE.GLTFLoader();
+        loader17.crossOrigin = true;
+        loader17.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-14, 9.3, 26);
+            scene.add(object);
+        });
+
     </script>
 </body>
 
