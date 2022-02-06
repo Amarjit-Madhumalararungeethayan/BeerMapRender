@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
     <!--Three js-->
-    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/build/three.min.js"></script>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r122/build/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r122/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r122/examples/js/controls/OrbitControls.js"></script>
     <style>
         * {
             margin: 0;
             padding: 0;
+            overflow: hidden;
         }
     </style>
 
@@ -26,35 +26,208 @@
     <div id="canvas-container"></div>
     <!--Script-->
     <script>
-        const backgroundColor = 0x000000;
+        const FALL = {
+            NONE: 0,
+            SNOW: 1,
+            RAIN: 2,
+        }
+        const FALLTYPE = FALL.NONE;
+
+        var particles = [];
+        const maxRange = 300;
+        const minRange = maxRange / 2;
+        const textureSize = 32.0;
+        let particleNum;
+
+        if (FALLTYPE == FALL.SNOW) {
+            particleNum = 1000;
+        } else if (FALLTYPE == FALL.RAIN) {
+            particleNum = 90000;
+        }
 
         var renderCalls = [];
 
-        function render() {
+        const SKYTEXTURE = {
+            DRAUGHT: 'h2s',
+            VOLCANO: 'flame',
+            SKY: 'purplenebula'
+        }
+
+        let skyboxImage = SKYTEXTURE.DRAUGHT;
+
+        function render(timeStamp) {
             requestAnimationFrame(render);
+            if (FALLTYPE == FALL.SNOW) {
+                const posArr = particles.geometry.vertices;
+                const velArr = particles.geometry.velocities;
+                posArr.forEach((vertex, i) => {
+                    const velocity = velArr[i];
+                    const velX = Math.sin(timeStamp * 0.001 * velocity.x) * 0.1;
+                    const velZ = Math.cos(timeStamp * 0.0015 * velocity.z) * 0.1;
+                    if (velX)
+                        vertex.x += velX;
+                    vertex.y += velocity.y;
+                    if (velZ)
+                        vertex.z += velZ;
+                    if (vertex.y < -minRange) {
+                        vertex.y = minRange;
+                    }
+                })
+                particles.geometry.verticesNeedUpdate = true;
+            } else if (FALLTYPE == FALL.RAIN) {
+                particles.geometry.vertices.forEach(p => {
+                    p.velocity -= 3 * Math.random() * 1;
+                    p.y += p.velocity;
+                    if (p.y < -100) {
+                        p.y = 100;
+                        p.velocity = 0;
+                    }
+                })
+                particles.geometry.verticesNeedUpdate = true;
+                particles.rotation.y += 0.002;
+
+            }
+
             renderCalls.forEach((callback) => {
                 callback();
             });
         }
-        render();
+
+        const drawRadialGradation = (ctx, canvasRadius, canvasW, canvasH) => {
+            ctx.save();
+            const gradient = ctx.createRadialGradient(canvasRadius, canvasRadius, 0, canvasRadius, canvasRadius, canvasRadius);
+            gradient.addColorStop(0, 'rgba(255,255,255,1.0)');
+            gradient.addColorStop(0.5, 'rgba(255,255,255,0.8)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvasW, canvasH);
+            ctx.restore();
+        }
+
+        const getSnow = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const diameter = textureSize;
+            canvas.width = diameter;
+            canvas.height = diameter;
+            const canvasRadius = diameter / 2;
+            drawRadialGradation(ctx, canvasRadius, canvas.width, canvas.height);
+
+
+            const texture = new THREE.Texture(canvas);
+            texture.type = THREE.FloatType;
+            texture.needsUpdate = true;
+            return texture;
+        }
 
         var scene = new THREE.Scene();
 
         var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1200);
-        camera.position.set(-50, 50, 50);
+        camera.position.set(-50, -50, 50);
+
+        if (FALLTYPE == FALL.SNOW) {
+
+            const pointGeometry = new THREE.Geometry();
+            for (let i = 0; i < particleNum; i++) {
+                const x = Math.floor(Math.random() * maxRange - minRange);
+                const y = Math.floor(Math.random() * maxRange - minRange);
+                const z = Math.floor(Math.random() * maxRange - minRange);
+                const particle = new THREE.Vector3(x, y, z);
+                pointGeometry.vertices.push(particle);
+            }
+
+            const pointMaterial = new THREE.PointsMaterial({
+                size: 8,
+                color: 0xffffff,
+                vertexColors: false,
+                map: getSnow(),
+                transparent: true,
+                fog: true,
+                depthWrite: false
+            });
+
+            const velocities = [];
+            for (let i = 0; i < particleNum; i++) {
+                const x = Math.floor(Math.random() * 6 - 3) * 0.1;
+                const y = Math.floor(Math.random() * 10 + 3) * -0.05;
+                const z = Math.floor(Math.random() * 6 - 3) * 0.1;
+                const particle = new THREE.Vector3(x, y, z);
+                velocities.push(particle);
+            }
+
+            particles = new THREE.Points(pointGeometry, pointMaterial);
+            particles.geometry.velocities = velocities;
+            scene.add(particles);
+        } else if (FALLTYPE == FALL.RAIN) {
+            rainGeo = new THREE.Geometry();
+            for (let i = 0; i < particleNum; i++) {
+                rainDrop = new THREE.Vector3(
+                    Math.random() * 400 - 200,
+                    Math.random() * 500 - 250,
+                    Math.random() * 400 - 200
+                )
+                rainDrop.velocity = {};
+                rainDrop.velocity = 0;
+                rainGeo.vertices.push(rainDrop);
+            }
+
+            rainMaterial = new THREE.PointsMaterial({
+                color: 0xaaaaaa,
+                size: 0.1,
+                transparent: true
+            })
+
+            particles = new THREE.Points(rainGeo, rainMaterial);
+            scene.add(particles);
+
+        }
 
         var renderer = new THREE.WebGLRenderer({
             antialias: true
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(backgroundColor);
         renderer.physicallyCorrectLights = true;
 
         renderer.toneMapping = THREE.LinearToneMapping;
         renderer.toneMappingExposure = Math.pow(0.94, 5.0);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFShadowMap;
+
+        const createPathStrings = (filename) => {
+            const basePath = `https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/${filename}/`;
+            const baseFilename = basePath + filename;
+            const fileType = filename == 'purplenebula' ? '.png' : '.jpg';
+            const sides = ['ft', 'bk', 'up', 'dn', 'rt', 'lf'];
+            const pathStings = sides.map(side => {
+                return baseFilename + '_' + side + fileType;
+            });
+
+            return pathStings;
+        }
+
+        const createMaterialArray = (filename) => {
+            const skyboxImagepaths = createPathStrings(filename);
+
+            const materialArray = skyboxImagepaths.map(image => {
+                let texture = new THREE.TextureLoader().load(image);
+
+                return new THREE.MeshBasicMaterial({
+                    map: texture,
+                    side: THREE.BackSide
+                });
+            });
+            return materialArray;
+        }
+
+        const materialArray = createMaterialArray(skyboxImage);
+
+        skyboxGeo = new THREE.BoxGeometry(600, 600, 600);
+        skybox = new THREE.Mesh(skyboxGeo, materialArray);
+        skybox.position.y = 100;
+
+        scene.add(skybox);
 
         window.addEventListener('resize', function() {
             camera.aspect = window.innerWidth / window.innerHeight;
@@ -77,8 +250,8 @@
         controls.minDistance = 50;
         controls.maxDistance = 100;
 
-        controls.minPolarAngle = Math.PI/6; // radians
-        controls.maxPolarAngle = Math.PI/3; // radians
+        controls.minPolarAngle = Math.PI / 6; // radians
+        controls.maxPolarAngle = Math.PI / 3; // radians
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -87,150 +260,155 @@
             controls.update()
         });
 
-        var loader1 = new THREE.GLTFLoader();
-        loader1.crossOrigin = true;
-        loader1.load('mapBase.glb', function(data) {
-            var object = data.scene;
-            object.position.set(0, 0, 0);
-            scene.add(object);
-        });
+        var loader = new THREE.GLTFLoader();
+        // loader.crossOrigin = true;
+        // loader.load('mapBase.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(0, 0, 0);
+        //     scene.add(object);
+        // });
 
-        var loader2 = new THREE.GLTFLoader();
-        loader2.crossOrigin = true;
-        loader2.load('maze.glb', function(data) {
+
+        loader.crossOrigin = true;
+        loader.load('maze.glb', function(data) {
             var object = data.scene;
             object.position.set(22, 9, 10);
             scene.add(object);
         });
 
-        var loader3 = new THREE.GLTFLoader();
-        loader3.crossOrigin = true;
-        loader3.load('bank.glb', function(data) {
-            var object = data.scene;
-            object.position.set(6, 10, -11);
-            scene.add(object);
-        });
 
-        var loader4 = new THREE.GLTFLoader();
-        loader4.crossOrigin = true;
-        loader4.load('commonRetailers.glb', function(data) {
-            var object = data.scene;
-            object.position.set(0, 0, 0);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('bank.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(6, 10, -11);
+        //     scene.add(object);
+        // });
 
-        var loader5 = new THREE.GLTFLoader();
-        loader5.crossOrigin = true;
-        loader5.load('ladyLiberty.glb', function(data) {
-            var object = data.scene;
-            object.position.set(21, 11, -18);
-            scene.add(object);
-        });
 
-        var loader6 = new THREE.GLTFLoader();
-        loader6.crossOrigin = true;
-        loader6.load('advertisement.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-26, 10, -26);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('commonRetailers.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(0, 0, 0);
+        //     scene.add(object);
+        // });
 
-        var loader7 = new THREE.GLTFLoader();
-        loader7.crossOrigin = true;
-        loader7.load('cafe.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-10, 9, -8);
-            scene.add(object);
-        });
 
-        var loader8 = new THREE.GLTFLoader();
-        loader8.crossOrigin = true;
-        loader8.load('factory.glb', function(data) {
-            var object = data.scene;
-            object.position.set(0, 9, -20);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('ladyLiberty.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(21, 11, -18);
+        //     scene.add(object);
+        // });
 
-        var loader9 = new THREE.GLTFLoader();
-        loader9.crossOrigin = true;
-        loader9.load('factory.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-24, 9, -8);
-            scene.add(object);
-        });
 
-        var loader10 = new THREE.GLTFLoader();
-        loader10.crossOrigin = true;
-        loader10.load('gasBunk.glb', function(data) {
-            var object = data.scene;
-            object.position.set(7, 9, 22);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('advertisement.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-26, 10, -26);
+        //     scene.add(object);
+        // });
 
-        var loader11 = new THREE.GLTFLoader();
-        loader11.crossOrigin = true;
-        loader11.load('warehouse.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-24, 9, 16);
-            scene.add(object);
-        });
 
-        var loader12 = new THREE.GLTFLoader();
-        loader12.crossOrigin = true;
-        loader12.load('warehouse.glb', function(data) {
-            var object = data.scene;
-            object.position.set(0, 9, 16);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('cafe.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-10, 9, -8);
+        //     scene.add(object);
+        // });
 
-        var loader13 = new THREE.GLTFLoader();
-        loader13.crossOrigin = true;
-        loader13.load('warehouse.glb', function(data) {
-            var object = data.scene;
-            object.position.set(8, 9, 8);
-            scene.add(object);
-        });
 
-        var loader13 = new THREE.GLTFLoader();
-        loader13.crossOrigin = true;
-        loader13.load('warehouse.glb', function(data) {
-            var object = data.scene;
-            object.position.set(20, 9, -4);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('factory.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(0, 9, -20);
+        //     scene.add(object);
+        // });
 
-        var loader14 = new THREE.GLTFLoader();
-        loader14.crossOrigin = true;
-        loader14.load('fortDelta.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-12, 9, 20);
-            scene.add(object);
-        });
 
-        var loader15 = new THREE.GLTFLoader();
-        loader15.crossOrigin = true;
-        loader15.load('towerOfBrandy.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-22, 9, 7);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('factory.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-24, 9, -8);
+        //     scene.add(object);
+        // });
 
-        var loader16 = new THREE.GLTFLoader();
-        loader16.crossOrigin = true;
-        loader16.load('border.glb', function(data) {
-            var object = data.scene;
-            object.position.set(14, 9.3, 22);
-            scene.add(object);
-        });
 
-        var loader17 = new THREE.GLTFLoader();
-        loader17.crossOrigin = true;
-        loader17.load('border.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-14, 9.3, 26);
-            scene.add(object);
-        });
+        // loader.crossOrigin = true;
+        // loader.load('gasBunk.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(7, 9, 22);
+        //     scene.add(object);
+        // });
 
+
+        // loader.crossOrigin = true;
+        // loader.load('warehouse.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-24, 9, 16);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('warehouse.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(0, 9, 16);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('warehouse.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(8, 9, 8);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('warehouse.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(20, 9, -4);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('fortDelta.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-12, 9, 20);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('towerOfBrandy.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-22, 9, 7);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('border.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(14, 9.3, 22);
+        //     scene.add(object);
+        // });
+
+
+        // loader.crossOrigin = true;
+        // loader.load('border.glb', function(data) {
+        //     var object = data.scene;
+        //     object.position.set(-14, 9.3, 26);
+        //     scene.add(object);
+        // });
+
+        // Add lights to scene
+        // var light = new THREE.AmbientLight(0xffffff, 1.5);
+        // scene.add(light);
+
+        render();
     </script>
 </body>
 
