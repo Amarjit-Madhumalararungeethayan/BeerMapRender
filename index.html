@@ -31,7 +31,7 @@
             SNOW: 1,
             RAIN: 2,
         }
-        const FALLTYPE = FALL.NONE;
+        const FALLTYPE = FALL.SNOW;
 
         var particles = [];
         const maxRange = 300;
@@ -261,12 +261,12 @@
         });
 
         var loader = new THREE.GLTFLoader();
-        // loader.crossOrigin = true;
-        // loader.load('mapBase.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(0, 0, 0);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('mapBase.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 0, 0);
+            scene.add(object);
+        });
 
 
         loader.crossOrigin = true;
@@ -277,136 +277,136 @@
         });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('bank.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(6, 10, -11);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('bank.glb', function(data) {
+            var object = data.scene;
+            object.position.set(6, 10, -11);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('commonRetailers.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(0, 0, 0);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('commonRetailers.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 0, 0);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('ladyLiberty.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(21, 11, -18);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('ladyLiberty.glb', function(data) {
+            var object = data.scene;
+            object.position.set(21, 11, -18);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('advertisement.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-26, 10, -26);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('advertisement.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-26, 10, -26);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('cafe.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-10, 9, -8);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('cafe.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, -8);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('factory.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(0, 9, -20);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, -20);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('factory.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-24, 9, -8);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, -8);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('gasBunk.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(7, 9, 22);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('gasBunk.glb', function(data) {
+            var object = data.scene;
+            object.position.set(7, 9, 22);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('warehouse.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-24, 9, 16);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, 16);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('warehouse.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(0, 9, 16);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, 16);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('warehouse.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(8, 9, 8);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(8, 9, 8);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('warehouse.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(20, 9, -4);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(20, 9, -4);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('fortDelta.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-12, 9, 20);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('fortDelta.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, 9, 20);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('towerOfBrandy.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-22, 9, 7);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('towerOfBrandy.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-22, 9, 7);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('border.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(14, 9.3, 22);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(14, 9.3, 22);
+            scene.add(object);
+        });
 
 
-        // loader.crossOrigin = true;
-        // loader.load('border.glb', function(data) {
-        //     var object = data.scene;
-        //     object.position.set(-14, 9.3, 26);
-        //     scene.add(object);
-        // });
+        loader.crossOrigin = true;
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-14, 9.3, 26);
+            scene.add(object);
+        });
 
         // Add lights to scene
-        // var light = new THREE.AmbientLight(0xffffff, 1.5);
-        // scene.add(light);
+        var light = new THREE.AmbientLight(0xffffff, 1.5);
+        scene.add(light);
 
         render();
     </script>
