@@ -26,7 +26,7 @@
     <div id="canvas-container"></div>
     <!--Script-->
     <script>
-        const backgroundColor = 0x000000;
+        const backgroundColor = 0x333333;
 
         var renderCalls = [];
 
@@ -119,13 +119,6 @@
             scene.add(object);
         });
 
-        var loader6 = new THREE.GLTFLoader();
-        loader6.crossOrigin = true;
-        loader6.load('advertisement.glb', function(data) {
-            var object = data.scene;
-            object.position.set(-25, 10, -25);
-            scene.add(object);
-        });
 
         var loader7 = new THREE.GLTFLoader();
         loader7.crossOrigin = true;
@@ -228,6 +221,45 @@
         loader18.load('border.glb', function(data) {
             var object = data.scene;
             object.position.set(24, -0.8, 24);
+            scene.add(object);
+        });
+
+        var loader18 = new THREE.GLTFLoader();
+        loader18.crossOrigin = true;
+        loader18.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, -0.8, -24);
+            scene.add(object);
+        });
+
+        var loader18 = new THREE.GLTFLoader();
+        loader18.crossOrigin = true;
+        loader18.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, -0.8, -16);
+            scene.add(object);
+        });
+
+        var loader18 = new THREE.GLTFLoader();
+        loader18.crossOrigin = true;
+        loader18.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, -0.8, -24);
+            scene.add(object);
+        });
+
+        loader18.load('base.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, -0.8, 0);
+            object.scale.set(1, 1, 1);
+            scene.add(object);
+        });
+
+        var loader18 = new THREE.GLTFLoader();
+        loader18.crossOrigin = true;
+        loader18.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(12, -0.8, -24);
             scene.add(object);
         });
 
