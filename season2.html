@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Three.js - Three.js</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <!--Three js-->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@master/build/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!--Canvas-->
+    <div id="canvas-container"></div>
+    <!--Script-->
+    <script>
+        const backgroundColor = 0x333333;
+
+        var renderCalls = [];
+
+        function render() {
+            requestAnimationFrame(render);
+            renderCalls.forEach((callback) => {
+                callback();
+            });
+        }
+        render();
+
+        var scene = new THREE.Scene();
+
+        var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1200);
+        camera.position.set(-50, 50, 50);
+
+        var renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(backgroundColor);
+        renderer.physicallyCorrectLights = true;
+
+        renderer.toneMapping = THREE.LinearToneMapping;
+        renderer.toneMappingExposure = Math.pow(0.94, 5.0);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+
+        window.addEventListener('resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, false);
+
+        document.body.appendChild(renderer.domElement);
+
+        function renderScene() {
+            renderer.render(scene, camera);
+        }
+        renderCalls.push(renderScene);
+
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        controls.rotateSpeed = 0.5;
+        controls.zoomSpeed = 0.9;
+
+        controls.minDistance = 50;
+        controls.maxDistance = 100;
+
+        controls.minPolarAngle = Math.PI / 6; // radians
+        controls.maxPolarAngle = Math.PI / 3; // radians
+
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        renderCalls.push(function() {
+            controls.update()
+        });
+
+        var loader = new THREE.GLTFLoader();
+        loader.setPath('/assets/components/');
+
+        loader.load('../MapBase/sand.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 0, 0);
+            scene.add(object);
+        });
+
+        loader.load('maze.glb', function(data) {
+            var object = data.scene;
+            object.position.set(22, 9, 10);
+            scene.add(object);
+        });
+
+        loader.load('bank.glb', function(data) {
+            var object = data.scene;
+            object.position.set(6, 10, -11);
+            scene.add(object);
+        });
+
+        loader.load('ladyLiberty.glb', function(data) {
+            var object = data.scene;
+            object.position.set(21, 11, -18);
+            scene.add(object);
+        });
+
+        loader.load('cafe.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, -8);
+            scene.add(object);
+        });
+
+        loader.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, -20);
+            scene.add(object);
+        });
+
+        loader.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, -8);
+            scene.add(object);
+        });
+
+        loader.load('gasBunk.glb', function(data) {
+            var object = data.scene;
+            object.position.set(7, 9, 22);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, 16);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, 16);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(8, 9, 8);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(20, 9, -4);
+            scene.add(object);
+        });
+
+        loader.load('fortDelta.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, 9, 20);
+            scene.add(object);
+        });
+
+        loader.load('towerOfBrandy.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-22, 9, 7);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(8, 10, 0);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-8, 10, 4);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(24, 10, 24);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 10, -24);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 10, -16);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, 10, -24);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(12, 10, -24);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, 22);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-26, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, 6);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, 10);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(2, 9, 6);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(14, 9, 22);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(14, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, -10);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(26, 9, -26);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(26, 9, -14);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-14, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('../ground/sand.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, -1, 0);
+            object.scale.set(150, 1, 150);
+            scene.add(object);
+        });
+
+        // Ambient Light
+        var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const materialArray = []
+
+        const texloader = new THREE.TextureLoader();
+        const textureFt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/h2s/h2s_ft.jpg');
+        const textureBk = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/h2s/h2s_bk.jpg');
+        const textureUp = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/h2s/h2s_up.jpg');
+        const textureDn = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/h2s/h2s_dn.jpg');
+        const textureRt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/h2s/h2s_rt.jpg');
+        const textureLf = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/h2s/h2s_lf.jpg');
+
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureFt
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureBk
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureUp
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureDn
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureRt
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureLf
+        }));
+        for (let i = 0; i < 6; i += 1) {
+            materialArray[i].side = THREE.DoubleSide;
+        }
+
+        const skyboxGeo = new THREE.BoxGeometry(600, 600, 600);
+        const skybox = new THREE.Mesh(skyboxGeo, materialArray);
+        skybox.position.y = 50;
+        scene.add(skybox);
+    </script>
+</body>
+
+</html>

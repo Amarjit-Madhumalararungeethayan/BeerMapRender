@@ -77,8 +77,8 @@
         controls.minDistance = 50;
         controls.maxDistance = 100;
 
-        controls.minPolarAngle = Math.PI/6; // radians
-        controls.maxPolarAngle = Math.PI/3; // radians
+        controls.minPolarAngle = Math.PI / 6; // radians
+        controls.maxPolarAngle = Math.PI / 3; // radians
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -87,283 +87,217 @@
             controls.update()
         });
 
-        var loader1 = new THREE.GLTFLoader();
-        loader1.crossOrigin = true;
-        loader1.load('mapBase.glb', function(data) {
+        var loader = new THREE.GLTFLoader();
+        loader.setPath('/assets/components/');
+
+        loader.load('../MapBase/mapBase.glb', function(data) {
             var object = data.scene;
             object.position.set(0, 0, 0);
             scene.add(object);
         });
 
-        var loader2 = new THREE.GLTFLoader();
-        loader2.crossOrigin = true;
-        loader2.load('maze.glb', function(data) {
+        loader.load('maze.glb', function(data) {
             var object = data.scene;
             object.position.set(22, 9, 10);
             scene.add(object);
         });
 
-        var loader3 = new THREE.GLTFLoader();
-        loader3.crossOrigin = true;
-        loader3.load('bank.glb', function(data) {
+        loader.load('bank.glb', function(data) {
             var object = data.scene;
             object.position.set(6, 10, -11);
             scene.add(object);
         });
 
-        var loader5 = new THREE.GLTFLoader();
-        loader5.crossOrigin = true;
-        loader5.load('ladyLiberty.glb', function(data) {
+        loader.load('ladyLiberty.glb', function(data) {
             var object = data.scene;
             object.position.set(21, 11, -18);
             scene.add(object);
         });
 
-
-        var loader7 = new THREE.GLTFLoader();
-        loader7.crossOrigin = true;
-        loader7.load('cafe.glb', function(data) {
+        loader.load('cafe.glb', function(data) {
             var object = data.scene;
             object.position.set(-10, 9, -8);
             scene.add(object);
         });
 
-        var loader8 = new THREE.GLTFLoader();
-        loader8.crossOrigin = true;
-        loader8.load('factory.glb', function(data) {
+        loader.load('factory.glb', function(data) {
             var object = data.scene;
             object.position.set(0, 9, -20);
             scene.add(object);
         });
 
-        var loader9 = new THREE.GLTFLoader();
-        loader9.crossOrigin = true;
-        loader9.load('factory.glb', function(data) {
+        loader.load('factory.glb', function(data) {
             var object = data.scene;
             object.position.set(-24, 9, -8);
             scene.add(object);
         });
 
-        var loader10 = new THREE.GLTFLoader();
-        loader10.crossOrigin = true;
-        loader10.load('gasBunk.glb', function(data) {
+        loader.load('gasBunk.glb', function(data) {
             var object = data.scene;
             object.position.set(7, 9, 22);
             scene.add(object);
         });
 
-        var loader11 = new THREE.GLTFLoader();
-        loader11.crossOrigin = true;
-        loader11.load('warehouse.glb', function(data) {
+        loader.load('warehouse.glb', function(data) {
             var object = data.scene;
             object.position.set(-24, 9, 16);
             scene.add(object);
         });
 
-        var loader12 = new THREE.GLTFLoader();
-        loader12.crossOrigin = true;
-        loader12.load('warehouse.glb', function(data) {
+        loader.load('warehouse.glb', function(data) {
             var object = data.scene;
             object.position.set(0, 9, 16);
             scene.add(object);
         });
 
-        var loader13 = new THREE.GLTFLoader();
-        loader13.crossOrigin = true;
-        loader13.load('warehouse.glb', function(data) {
+        loader.load('warehouse.glb', function(data) {
             var object = data.scene;
             object.position.set(8, 9, 8);
             scene.add(object);
         });
 
-        var loader13 = new THREE.GLTFLoader();
-        loader13.crossOrigin = true;
-        loader13.load('warehouse.glb', function(data) {
+        loader.load('warehouse.glb', function(data) {
             var object = data.scene;
             object.position.set(20, 9, -4);
             scene.add(object);
         });
 
-        var loader14 = new THREE.GLTFLoader();
-        loader14.crossOrigin = true;
-        loader14.load('fortDelta.glb', function(data) {
+        loader.load('fortDelta.glb', function(data) {
             var object = data.scene;
             object.position.set(-12, 9, 20);
             scene.add(object);
         });
 
-        var loader15 = new THREE.GLTFLoader();
-        loader15.crossOrigin = true;
-        loader15.load('towerOfBrandy.glb', function(data) {
+        loader.load('towerOfBrandy.glb', function(data) {
             var object = data.scene;
             object.position.set(-22, 9, 7);
             scene.add(object);
         });
 
-        var loader16 = new THREE.GLTFLoader();
-        loader16.crossOrigin = true;
-        loader16.load('border.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(8, -1, 0);
+            object.position.set(8, 10, 0);
             scene.add(object);
         });
 
-        var loader17 = new THREE.GLTFLoader();
-        loader17.crossOrigin = true;
-        loader17.load('border.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(-8, -1, 4);
+            object.position.set(-8, 10, 4);
             scene.add(object);
         });
 
-        var loader18 = new THREE.GLTFLoader();
-        loader18.crossOrigin = true;
-        loader18.load('border.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(24, -0.8, 24);
+            object.position.set(24, 10, 24);
             scene.add(object);
         });
 
-        var loader18 = new THREE.GLTFLoader();
-        loader18.crossOrigin = true;
-        loader18.load('border.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(-24, -0.8, -24);
+            object.position.set(-24, 10, -24);
             scene.add(object);
         });
 
-        var loader18 = new THREE.GLTFLoader();
-        loader18.crossOrigin = true;
-        loader18.load('border.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(-24, -0.8, -16);
+            object.position.set(-24, 10, -16);
             scene.add(object);
         });
 
-        var loader18 = new THREE.GLTFLoader();
-        loader18.crossOrigin = true;
-        loader18.load('border.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(-12, -0.8, -24);
+            object.position.set(-12, 10, -24);
             scene.add(object);
         });
 
-        loader18.load('background.glb', function(data) {
+        loader.load('border.glb', function(data) {
             var object = data.scene;
-            object.position.set(-100, -0.8, 0);
-            object.scale.set(150, 1, 150);
+            object.position.set(12, 10, -24);
             scene.add(object);
         });
 
-        var loader18 = new THREE.GLTFLoader();
-        loader18.crossOrigin = true;
-        loader18.load('border.glb', function(data) {
-            var object = data.scene;
-            object.position.set(12, -0.8, -24);
-            scene.add(object);
-        });
-
-        var loader19 = new THREE.GLTFLoader();
-        loader19.crossOrigin = true;
-        loader19.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(-2, 9, 22);
             scene.add(object);
         });
 
-        var loader20 = new THREE.GLTFLoader();
-        loader20.crossOrigin = true;
-        loader20.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(-2, 9, 26);
             scene.add(object);
         });
 
-        var loader21 = new THREE.GLTFLoader();
-        loader21.crossOrigin = true;
-        loader21.load('retailerPink.glb', function(data) {
+        loader.load('retailerPink.glb', function(data) {
             var object = data.scene;
             object.position.set(-10, 9, 26);
             scene.add(object);
         });
 
-        var loader22 = new THREE.GLTFLoader();
-        loader22.crossOrigin = true;
-        loader22.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(-26, 9, 26);
             scene.add(object);
         });
 
-        var loader23 = new THREE.GLTFLoader();
-        loader23.crossOrigin = true;
-        loader23.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(-2, 9, 6);
             scene.add(object);
         });
 
-        var loader24 = new THREE.GLTFLoader();
-        loader24.crossOrigin = true;
-        loader24.load('retailerPink.glb', function(data) {
+        loader.load('retailerPink.glb', function(data) {
             var object = data.scene;
             object.position.set(-10, 9, 10);
             scene.add(object);
         });
 
-        var loader25 = new THREE.GLTFLoader();
-        loader25.crossOrigin = true;
-        loader25.load('retailerPink.glb', function(data) {
+        loader.load('retailerPink.glb', function(data) {
             var object = data.scene;
             object.position.set(2, 9, 6);
             scene.add(object);
         });
 
-        var loader26 = new THREE.GLTFLoader();
-        loader26.crossOrigin = true;
-        loader26.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(14, 9, 22);
             scene.add(object);
         });
 
-        var loader27 = new THREE.GLTFLoader();
-        loader27.crossOrigin = true;
-        loader27.load('retailerPink.glb', function(data) {
+        loader.load('retailerPink.glb', function(data) {
             var object = data.scene;
             object.position.set(14, 9, 26);
             scene.add(object);
         });
-//
-        var loader28 = new THREE.GLTFLoader();
-        loader28.crossOrigin = true;
-        loader28.load('retailerPink.glb', function(data) {
+
+        loader.load('retailerPink.glb', function(data) {
             var object = data.scene;
             object.position.set(-2, 9, -10);
             scene.add(object);
         });
 
-        var loader29 = new THREE.GLTFLoader();
-        loader29.crossOrigin = true;
-        loader29.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(26, 9, -26);
             scene.add(object);
         });
 
-        var loader30 = new THREE.GLTFLoader();
-        loader30.crossOrigin = true;
-        loader30.load('retailerPink.glb', function(data) {
+        loader.load('retailerPink.glb', function(data) {
             var object = data.scene;
             object.position.set(26, 9, -14);
             scene.add(object);
         });
 
-        var loader31 = new THREE.GLTFLoader();
-        loader31.crossOrigin = true;
-        loader31.load('basicRetailerSingle.glb', function(data) {
+        loader.load('basicRetailerSingle.glb', function(data) {
             var object = data.scene;
             object.position.set(-14, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('../ground/flame.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, -1, 0);
+            object.scale.set(200, 1, 200);
             scene.add(object);
         });
 
@@ -377,19 +311,32 @@
         const textureRt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_rt.jpg');
         const textureLf = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_lf.jpg');
 
-        materialArray.push(new THREE.MeshBasicMaterial({ map: textureFt }));
-        materialArray.push(new THREE.MeshBasicMaterial({ map: textureBk }));
-        materialArray.push(new THREE.MeshBasicMaterial({ map: textureUp }));
-        materialArray.push(new THREE.MeshBasicMaterial({ map: textureDn }));
-        materialArray.push(new THREE.MeshBasicMaterial({ map: textureRt }));
-        materialArray.push(new THREE.MeshBasicMaterial({ map: textureLf }));
-        for (let i = 0; i < 6; i += 1) { materialArray[i].side = THREE.DoubleSide; }
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureFt
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureBk
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureUp
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureDn
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureRt
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureLf
+        }));
+        for (let i = 0; i < 6; i += 1) {
+            materialArray[i].side = THREE.DoubleSide;
+        }
 
         const skyboxGeo = new THREE.BoxGeometry(600, 600, 600);
         const skybox = new THREE.Mesh(skyboxGeo, materialArray);
         skybox.position.y = 50;
         scene.add(skybox);
-        
     </script>
 </body>
 

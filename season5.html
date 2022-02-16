@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Three.js - Three.js</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <!--Three js-->
+    <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r122/build/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r122/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.rawgit.com/mrdoob/three.js/r122/examples/js/controls/OrbitControls.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!--Canvas-->
+    <div id="canvas-container"></div>
+    <!--Script-->
+    <script>
+        var particles = [];
+        const maxRange = 300;
+        const minRange = maxRange / 2;
+        const textureSize = 32.0;
+        let particleNum = 1000;
+
+        var renderCalls = [];
+
+        function render(timeStamp) {
+            console.log(particles)
+            const posArr = particles.geometry.vertices;
+            const velArr = particles.geometry.velocities;
+            posArr.forEach((vertex, i) => {
+                const velocity = velArr[i];
+                const velX = Math.sin(timeStamp * 0.001 * velocity.x) * 0.1;
+                const velZ = Math.cos(timeStamp * 0.0015 * velocity.z) * 0.1;
+                if (velX)
+                    vertex.x += velX;
+                vertex.y += velocity.y;
+                if (velZ)
+                    vertex.z += velZ;
+                if (vertex.y < -minRange) {
+                    vertex.y = minRange;
+                }
+            })
+            particles.geometry.verticesNeedUpdate = true;
+            requestAnimationFrame(render);
+            renderCalls.forEach((callback) => {
+                callback();
+            });
+        }
+
+
+        var scene = new THREE.Scene();
+
+        const drawRadialGradation = (ctx, canvasRadius, canvasW, canvasH) => {
+            ctx.save();
+            const gradient = ctx.createRadialGradient(canvasRadius, canvasRadius, 0, canvasRadius, canvasRadius, canvasRadius);
+            gradient.addColorStop(0, 'rgba(255,255,255,1.0)');
+            gradient.addColorStop(0.5, 'rgba(255,255,255,0.8)');
+            gradient.addColorStop(1, 'rgba(255,255,255,0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvasW, canvasH);
+            ctx.restore();
+        }
+
+        const getSnow = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const diameter = textureSize;
+            canvas.width = diameter;
+            canvas.height = diameter;
+            const canvasRadius = diameter / 2;
+            drawRadialGradation(ctx, canvasRadius, canvas.width, canvas.height);
+
+
+            const texture = new THREE.Texture(canvas);
+            texture.type = THREE.FloatType;
+            texture.needsUpdate = true;
+            return texture;
+        }
+
+        const pointGeometry = new THREE.Geometry();
+        for (let i = 0; i < particleNum; i++) {
+            const x = Math.floor(Math.random() * maxRange - minRange);
+            const y = Math.floor(Math.random() * maxRange - minRange);
+            const z = Math.floor(Math.random() * maxRange - minRange);
+            const particle = new THREE.Vector3(x, y, z);
+            pointGeometry.vertices.push(particle);
+        }
+
+        const pointMaterial = new THREE.PointsMaterial({
+            size: 4,
+            color: 0xffffff,
+            vertexColors: false,
+            map: getSnow(),
+            transparent: true,
+            fog: true,
+            depthWrite: false
+        });
+
+        const velocities = [];
+        for (let i = 0; i < particleNum; i++) {
+            const x = Math.floor(Math.random() * 6 - 3) * 0.1;
+            const y = Math.floor(Math.random() * 10 + 3) * -0.05;
+            const z = Math.floor(Math.random() * 6 - 3) * 0.1;
+            const particle = new THREE.Vector3(x, y, z);
+            velocities.push(particle);
+        }
+
+        particles = new THREE.Points(pointGeometry, pointMaterial);
+        particles.geometry.velocities = velocities;
+        scene.add(particles);
+
+        var camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1200);
+        camera.position.set(-50, 50, 50);
+
+        var renderer = new THREE.WebGLRenderer({
+            antialias: true
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.physicallyCorrectLights = true;
+
+        renderer.toneMapping = THREE.LinearToneMapping;
+        renderer.toneMappingExposure = Math.pow(0.94, 5.0);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap;
+
+        window.addEventListener('resize', function() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, false);
+
+        document.body.appendChild(renderer.domElement);
+
+        function renderScene() {
+            renderer.render(scene, camera);
+        }
+        renderCalls.push(renderScene);
+
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        controls.rotateSpeed = 0.5;
+        controls.zoomSpeed = 0.9;
+
+        controls.minDistance = 50;
+        controls.maxDistance = 100;
+
+        controls.minPolarAngle = Math.PI / 6; // radians
+        controls.maxPolarAngle = Math.PI / 3; // radians
+
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        renderCalls.push(function() {
+            controls.update()
+        });
+
+        var loader = new THREE.GLTFLoader();
+        loader.setPath('/assets/components/');
+
+        loader.load('../MapBase/mapBase.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 0, 0);
+            scene.add(object);
+        });
+
+        loader.load('maze.glb', function(data) {
+            var object = data.scene;
+            object.position.set(22, 9, 10);
+            scene.add(object);
+        });
+
+        loader.load('bank.glb', function(data) {
+            var object = data.scene;
+            object.position.set(6, 10, -11);
+            scene.add(object);
+        });
+
+        loader.load('ladyLiberty.glb', function(data) {
+            var object = data.scene;
+            object.position.set(21, 11, -18);
+            scene.add(object);
+        });
+
+        loader.load('cafe.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, -8);
+            scene.add(object);
+        });
+
+        loader.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, -20);
+            scene.add(object);
+        });
+
+        loader.load('factory.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, -8);
+            scene.add(object);
+        });
+
+        loader.load('gasBunk.glb', function(data) {
+            var object = data.scene;
+            object.position.set(7, 9, 22);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 9, 16);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(0, 9, 16);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(8, 9, 8);
+            scene.add(object);
+        });
+
+        loader.load('warehouse.glb', function(data) {
+            var object = data.scene;
+            object.position.set(20, 9, -4);
+            scene.add(object);
+        });
+
+        loader.load('fortDelta.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, 9, 20);
+            scene.add(object);
+        });
+
+        loader.load('towerOfBrandy.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-22, 9, 7);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(8, 10, 0);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-8, 10, 4);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(24, 10, 24);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 10, -24);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-24, 10, -16);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-12, 10, -24);
+            scene.add(object);
+        });
+
+        loader.load('border.glb', function(data) {
+            var object = data.scene;
+            object.position.set(12, 10, -24);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, 22);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-26, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, 6);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-10, 9, 10);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(2, 9, 6);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(14, 9, 22);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(14, 9, 26);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-2, 9, -10);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(26, 9, -26);
+            scene.add(object);
+        });
+
+        loader.load('retailerPink.glb', function(data) {
+            var object = data.scene;
+            object.position.set(26, 9, -14);
+            scene.add(object);
+        });
+
+        loader.load('basicRetailerSingle.glb', function(data) {
+            var object = data.scene;
+            object.position.set(-14, 9, 26);
+            scene.add(object);
+        });
+
+        const materialArray = []
+
+        const texloader = new THREE.TextureLoader();
+        const textureFt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/purplenebula/purplenebula_ft.png');
+        const textureBk = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/purplenebula/purplenebula_bk.png');
+        const textureUp = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/purplenebula/purplenebula_up.png');
+        const textureDn = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/purplenebula/purplenebula_dn.png');
+        const textureRt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/purplenebula/purplenebula_rt.png');
+        const textureLf = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/purplenebula/purplenebula_lf.png');
+
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureFt
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureBk
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureUp
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureDn
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureRt
+        }));
+        materialArray.push(new THREE.MeshBasicMaterial({
+            map: textureLf
+        }));
+        for (let i = 0; i < 6; i += 1) {
+            materialArray[i].side = THREE.DoubleSide;
+        }
+
+        const skyboxGeo = new THREE.BoxGeometry(600, 600, 600);
+        const skybox = new THREE.Mesh(skyboxGeo, materialArray);
+        skybox.position.y = 50;
+        scene.add(skybox);
+
+        render();
+    </script>
+</body>
+
+</html>
