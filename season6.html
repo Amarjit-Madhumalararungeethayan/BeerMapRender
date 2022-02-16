@@ -30,7 +30,7 @@
         const maxRange = 300;
         const minRange = maxRange / 2;
         const textureSize = 32.0;
-        let particleNum = 5000;
+        let particleNum = 1000;
 
         var renderCalls = [];
 
@@ -59,10 +59,7 @@
             ctx.beginPath();
             ctx.moveTo(canvasW / 2, 0);
             ctx.lineTo(canvasW / 2, canvasH);
-            let gradient = ctx.createLinearGradient(0, 0, 0, canvasH);
-            gradient.addColorStop(0.5, 'grey');
-            gradient.addColorStop(1, 'white');
-            ctx.strokeStyle = gradient;
+            ctx.strokeStyle = 'white';
             ctx.stroke();
             ctx.restore();
         }
@@ -154,7 +151,7 @@
         controls.maxDistance = 100;
 
         controls.minPolarAngle = Math.PI / 6; // radians
-        controls.maxPolarAngle = Math.PI / 3; // radians
+        controls.maxPolarAngle = Math.PI / 2.5; // radians
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -166,7 +163,7 @@
         var loader = new THREE.GLTFLoader();
         loader.setPath('./assets/components/');
 
-        loader.load('../MapBase/mapBase.glb', function(data) {
+        loader.load('../MapBase/mapBaseWhite.glb', function(data) {
             var object = data.scene;
             object.position.set(0, 0, 0);
             scene.add(object);
@@ -370,7 +367,7 @@
             scene.add(object);
         });
 
-        loader.load('../ground/flame.glb', function(data) {
+        loader.load('../ground/moon.glb', function(data) {
             var object = data.scene;
             object.position.set(0, -1, 0);
             object.scale.set(200, 1, 200);
@@ -380,12 +377,13 @@
         const materialArray = []
 
         const texloader = new THREE.TextureLoader();
-        const textureFt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_ft.jpg');
-        const textureBk = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_bk.jpg');
-        const textureUp = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_up.jpg');
-        const textureDn = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_dn.jpg');
-        const textureRt = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_rt.jpg');
-        const textureLf = texloader.load('https://raw.githubusercontent.com/codypearce/some-skyboxes/master/skyboxes/flame/flame_lf.jpg');
+        texloader.setPath('assets/Skyboxes/moon/');
+        const textureFt = texloader.load('moon_ft.jpg');
+        const textureBk = texloader.load('moon_bk.jpg');
+        const textureUp = texloader.load('moon_up.jpg');
+        const textureDn = texloader.load('moon_dn.jpg');
+        const textureRt = texloader.load('moon_rt.jpg');
+        const textureLf = texloader.load('moon_lf.jpg');
 
         materialArray.push(new THREE.MeshBasicMaterial({
             map: textureFt

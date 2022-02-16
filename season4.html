@@ -78,7 +78,7 @@
         controls.maxDistance = 100;
 
         controls.minPolarAngle = Math.PI / 6; // radians
-        controls.maxPolarAngle = Math.PI / 3; // radians
+        controls.maxPolarAngle = Math.PI / 2.5; // radians
 
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
@@ -90,7 +90,7 @@
         var loader = new THREE.GLTFLoader();
         loader.setPath('./assets/components/');
 
-        loader.load('../MapBase/mapBase.glb', function(data) {
+        loader.load('../MapBase/mapBaseWhite.glb', function(data) {
             var object = data.scene;
             object.position.set(0, 0, 0);
             scene.add(object);
