@@ -171,7 +171,7 @@
         var loader = new THREE.GLTFLoader();
         loader.setPath('./assets/components/');
 
-        loader.load('../MapBase/mapBase.glb', function(data) {
+        loader.load('../MapBase/mapBaseWhite.glb', function(data) {
             var object = data.scene;
             object.position.set(0, 0, 0);
             scene.add(object);
