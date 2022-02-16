@@ -31,7 +31,7 @@
         const maxRange = 300;
         const minRange = maxRange / 2;
         const textureSize = 32.0;
-        let particleNum = 1000;
+        let particleNum = 500;
 
         var renderCalls = [];
 
@@ -100,7 +100,7 @@
         }
 
         const pointMaterial = new THREE.PointsMaterial({
-            size: 4,
+            size: 3,
             color: 0xffffff,
             vertexColors: false,
             map: getSnow(),
