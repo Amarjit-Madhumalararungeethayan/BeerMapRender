@@ -2,11 +2,10 @@
 <html>
 
 <head>
-    <title>Beerfactory seasons</title>
+    <title>Beerfactory Seasons</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-    <!--Three js-->
     <script src="https://cdn.jsdelivr.net/gh/mrdoob/three.js@r122/build/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r122/examples/js/loaders/GLTFLoader.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r122/examples/js/controls/OrbitControls.js"></script>
@@ -31,7 +30,7 @@
         const maxRange = 300;
         const minRange = maxRange / 2;
         const textureSize = 32.0;
-        let particleNum = 400;
+        let particleNum = 5000;
 
         var renderCalls = [];
 
@@ -40,13 +39,7 @@
             const velArr = particles.geometry.velocities;
             posArr.forEach((vertex, i) => {
                 const velocity = velArr[i];
-                const velX = 0;
-                const velZ = 0;
-                if (velX)
-                    vertex.x += velX;
                 vertex.y += velocity.y;
-                if (velZ)
-                    vertex.z += velZ;
                 if (vertex.y < 0) {
                     vertex.y = minRange;
                 }
@@ -61,73 +54,29 @@
 
         var scene = new THREE.Scene();
 
-        const petal = [
-            [
-                [0, 0],
-                [0.3, -1],
-                [0.7, -1],
-                [1, 0],
-                [0.7, 1],
-                [0.3, 1],
-                [0, 0]
-            ],
-            [
-                [0, 0],
-                [1, 0]
-            ],
-        ];
-
-        const drawPetal = (ctx, path, width, height) => {
-            var i = 0;
-            do { // loop through paths
-                const p = path[i];
-                let j = 0;
-                ctx.moveTo(p[j][0] * width, p[j++][1] * height);
-                while (j < p.length - 1) {
-                    ctx.lineTo(p[j][0] * width, p[j++][1] * height);
-                }
-                if (p[j][0] === p[0][0] && p[j][1] === p[0][1]) { // is the path closed ?
-                    ctx.closePath();
-                } else {
-                    ctx.lineTo(p[j][0] * width, p[j][1] * height)
-                }
-            } while (++i < path.length);
-        }
-
-        const drawPetals = (ctx, x, y, count, startAt, petal, width, height) => {
-            const step = (Math.PI * 2) / count;
-            ctx.setTransform(1, 0, 0, 1, x, y);
-            ctx.rotate(startAt);
-            for (var i = 0; i < count; i += 1) {
-                drawPetal(ctx, petal, width, height);
-                ctx.rotate(step);
-            }
-            ctx.setTransform(1, 0, 0, 1, 0, 0); // restore default
-        }
-
-        const drawFlower = (ctx, lineWidth, fitScale, petalCount) => {
-            ctx.strokeStyle = "#ffb50e";
-            ctx.lineWidth = lineWidth;
-            const size = Math.min(ctx.canvas.width, ctx.canvas.height) * fitScale * 0.5;
+        const drawDrop = (ctx, canvasRadius, canvasW, canvasH) => {
+            ctx.save();
             ctx.beginPath();
-
-            drawPetals(ctx, ctx.canvas.width / 2, ctx.canvas.height / 2, 5, -Math.PI / 2, petal, size, size * 0.2);
+            ctx.moveTo(canvasW / 2, 0);
+            ctx.lineTo(canvasW / 2, canvasH);
+            let gradient = ctx.createLinearGradient(0, 0, 0, canvasH);
+            gradient.addColorStop(0.5, 'grey');
+            gradient.addColorStop(1, 'white');
+            ctx.strokeStyle = gradient;
             ctx.stroke();
-            ctx.beginPath();
-            ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, size * 0.15, 0, Math.PI * 2);
-            ctx.fillStyle = "white";
-            ctx.fill();
+            ctx.restore();
         }
 
-        const getPetals = () => {
+        const getDrops = () => {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
+            ctx.lineWidth = 1;
 
             const diameter = textureSize;
             canvas.width = diameter;
             canvas.height = diameter;
             const canvasRadius = diameter / 2;
-            drawFlower(ctx, 4, 0.95, 5);
+            drawDrop(ctx, canvasRadius, canvas.width, canvas.height);
 
 
             const texture = new THREE.Texture(canvas);
@@ -149,7 +98,7 @@
             size: 4,
             color: 0xffffff,
             vertexColors: false,
-            map: getPetals(),
+            map: getDrops(),
             transparent: true,
             fog: true,
             depthWrite: false
@@ -157,9 +106,9 @@
 
         const velocities = [];
         for (let i = 0; i < particleNum; i++) {
-            const x = Math.floor(Math.random() * 6 - 3) * 0.1;
-            const y = Math.floor(Math.random() * 10 + 3) * -0.05;
-            const z = Math.floor(Math.random() * 6 - 3) * 0.1;
+            const x = 0;
+            const y = Math.floor(Math.random() * 10 + 3) * -0.2;
+            const z = 0;
             const particle = new THREE.Vector3(x, y, z);
             velocities.push(particle);
         }
